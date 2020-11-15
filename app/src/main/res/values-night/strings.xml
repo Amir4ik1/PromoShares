@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="promo_title">Promo Title</string>
+    <string name="promo_id">Promo ID</string>
+    <string name="promo_title_in_card">Promo Title</string>
+    <string name="promo_text">Promo Text</string>
+</resources>
