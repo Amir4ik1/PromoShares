@@ -94,25 +94,17 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
     private void updatesButtonStatus() {
         if(response.getMeta().getCurrentPage() == response.getMeta().getLastPage()) {
             //Disable next button
-        //    button2.setOnClickListener(v -> {
                 button2.setEnabled(false);
-        //    });
         } else {
             //Enable next button
-        //    button2.setOnClickListener(v -> {
                 button2.setEnabled(true);
-        //    });
         }
         if (response.getMeta().getCurrentPage() == 0) {
             //Disable prev button
-        //    button1.setOnClickListener(v -> {
                 button1.setEnabled(false);
-        //    });
         } else {
             //Enable prev button
-           // button1.setOnClickListener(v -> {
                 button1.setEnabled(true);
-          //  });
         }
     }
 }
