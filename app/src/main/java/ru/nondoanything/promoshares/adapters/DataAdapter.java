@@ -52,8 +52,6 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder
         Data data = promodata.get(position);
         holder.promoTitle.setText(data.getTitle());
 
-        // Load Image from Internet and set it into ImageView using Glide
-
         Glide
                 .with(holder.itemView.getContext())
                 .load(data.getCover())

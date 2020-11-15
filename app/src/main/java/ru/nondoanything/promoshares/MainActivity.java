@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -25,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
 
     private RecyclerView recyclerViewData;
     private DataAdapter adapter;
+    private DataResponse response;
+    private Button button1, button2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,27 +40,25 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
             actionBar.hide();
         }
         recyclerViewData = findViewById(R.id.recyclerViewData);
+        button1 = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
         adapter = new DataAdapter();
         adapter.setPromodata(new ArrayList<Data>());
         recyclerViewData.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewData.setAdapter(adapter);
-        adapter.setPromoListener(this::onPromoCLick);
-        ApiFactory apiFactory = ApiFactory.getInstance();
-        ApiService apiService = apiFactory.getApiService();
-        apiService.getData()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<DataResponse>() {
-                    @Override
-                    public void accept(DataResponse dataResponse) throws Exception {
-                        adapter.setPromodata(dataResponse.getData());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(MainActivity.this, "Ошибка получения данных", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        adapter.setPromoListener(this);
+        updateList(1);
+        button1.setOnClickListener(v -> {
+            if(response.getMeta().getCurrentPage() != 0) {
+                updateList(response.getMeta().getCurrentPage() - 1);
+            }
+        });
+        button2.setOnClickListener(v -> {
+            if(response.getMeta().getCurrentPage() != response.getMeta().getLastPage()) {
+                updateList(response.getMeta().getCurrentPage() + 1);
+            }
+        });
+
     }
 
     @Override
@@ -67,12 +70,49 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
         intent.putExtra("title", data.getTitle());
         intent.putExtra("text", data.getText());
         intent.putExtra("cover", data.getCover());
-        /*if (data.getPhoto() != null && data.getPhoto().getUrlPhoto() != null) {
-            intent.putExtra("photo", data.getPhoto().getUrlPhoto());
-        }
-        else {
-            intent.putExtra("photo", );
-        }*/
         startActivity(intent);
+    }
+
+    private void updateList(int currentPage) {
+        button1.setEnabled(false);
+        button2.setEnabled(false);
+        ApiFactory apiFactory = ApiFactory.getInstance();
+        ApiService apiService = apiFactory.getApiService();
+        apiService.getData(currentPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(dataResponse -> {
+                    response = dataResponse;
+                    adapter.setPromodata(dataResponse.getData());
+                    updatesButtonStatus();
+                }, throwable -> {
+                    Toast.makeText(MainActivity.this, "Ошибка получения данных", Toast.LENGTH_SHORT).show();
+                    updatesButtonStatus();
+                });
+    }
+
+    private void updatesButtonStatus() {
+        if(response.getMeta().getCurrentPage() == response.getMeta().getLastPage()) {
+            //Disable next button
+        //    button2.setOnClickListener(v -> {
+                button2.setEnabled(false);
+        //    });
+        } else {
+            //Enable next button
+        //    button2.setOnClickListener(v -> {
+                button2.setEnabled(true);
+        //    });
+        }
+        if (response.getMeta().getCurrentPage() == 0) {
+            //Disable prev button
+        //    button1.setOnClickListener(v -> {
+                button1.setEnabled(false);
+        //    });
+        } else {
+            //Enable prev button
+           // button1.setOnClickListener(v -> {
+                button1.setEnabled(true);
+          //  });
+        }
     }
 }

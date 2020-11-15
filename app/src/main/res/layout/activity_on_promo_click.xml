@@ -53,7 +53,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="80dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="80dp"
         android:paddingStart="35dp"
         android:paddingEnd="20dp"
         android:text="@string/promo_text"
