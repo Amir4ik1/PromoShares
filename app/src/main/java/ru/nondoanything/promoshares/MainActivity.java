@@ -1,21 +1,21 @@
 package ru.nondoanything.promoshares;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import ru.nondoanything.promoshares.adapters.DataAdapter;
 import ru.nondoanything.promoshares.api.ApiFactory;
@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
             actionBar.hide();
         }
         recyclerViewData = findViewById(R.id.recyclerViewData);
-        button1 = findViewById(R.id.button);
-        button2 = findViewById(R.id.button2);
+        button1 = findViewById(R.id.button_prev);
+        button2 = findViewById(R.id.button_next);
         adapter = new DataAdapter();
         adapter.setPromodata(new ArrayList<Data>());
         recyclerViewData.setLayoutManager(new LinearLayoutManager(this));
@@ -64,12 +64,10 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
     @Override
     public void onPromoCLick(int position) {
         Data data = adapter.getPromodata().get(position);
+        Parcelable parcelData = Parcels.wrap(data);
         Toast.makeText(getApplicationContext(),"Позиция: " + position, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, onPromoClickActivity.class);
-        intent.putExtra("id", data.getId());
-        intent.putExtra("title", data.getTitle());
-        intent.putExtra("text", data.getText());
-        intent.putExtra("cover", data.getCover());
+        Intent intent = new Intent(this, PromoActivity.class);
+        intent.putExtra("data", parcelData);
         startActivity(intent);
     }
 
@@ -92,19 +90,21 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
     }
 
     private void updatesButtonStatus() {
-        if(response.getMeta().getCurrentPage() == response.getMeta().getLastPage()) {
-            //Disable next button
-                button2.setEnabled(false);
-        } else {
-            //Enable next button
-                button2.setEnabled(true);
-        }
-        if (response.getMeta().getCurrentPage() == 0) {
-            //Disable prev button
-                button1.setEnabled(false);
-        } else {
-            //Enable prev button
-                button1.setEnabled(true);
+        //Disable button_next
+        //Enable button_next
+        button2.setEnabled(response.getMeta().getCurrentPage() != response.getMeta().getLastPage());
+        //Disable button_prev
+        //Enable button_prev
+        button1.setEnabled(response.getMeta().getCurrentPage() != 0);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(response.getMeta().getCurrentPage() != 0) {
+            updateList(response.getMeta().getCurrentPage() - 1);
+    } else {
+            moveTaskToBack(true);
+            finish();
         }
     }
 }

@@ -3,6 +3,10 @@ package ru.nondoanything.promoshares.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+import org.parceler.ParcelProperty;
+
+@Parcel
 public class Data {
     @SerializedName("id")
     @Expose
@@ -23,6 +27,7 @@ public class Data {
     @Expose
     private Photo photo;
 
+    @ParcelProperty("id")
     public int getId() {
         return id;
     }
@@ -31,6 +36,7 @@ public class Data {
         this.id = id;
     }
 
+    @ParcelProperty("title")
     public String getTitle() {
         return title;
     }
@@ -39,6 +45,7 @@ public class Data {
         this.title = title;
     }
 
+    @ParcelProperty("text")
     public String getText() {
         return text;
     }
@@ -55,6 +62,7 @@ public class Data {
         this.weight = weight;
     }
 
+    @ParcelProperty("cover")
     public String getCover() {
         return cover;
     }

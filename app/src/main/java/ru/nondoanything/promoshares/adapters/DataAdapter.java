@@ -1,6 +1,5 @@
 package ru.nondoanything.promoshares.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import ru.nondoanything.promoshares.R;
 import ru.nondoanything.promoshares.pojo.Data;
@@ -65,7 +63,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder
         return promodata.size();
     }
 
-    class DataViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class DataViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView promoTitle;
         ImageView dataPhoto;
