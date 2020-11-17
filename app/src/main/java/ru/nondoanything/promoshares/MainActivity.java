@@ -100,11 +100,10 @@ public class MainActivity extends AppCompatActivity implements DataAdapter.OnPro
 
     @Override
     public void onBackPressed() {
-        if(response.getMeta().getCurrentPage() != 0) {
+        if(response.getMeta().getCurrentPage() != 1) {
             updateList(response.getMeta().getCurrentPage() - 1);
     } else {
             moveTaskToBack(true);
-            finish();
         }
     }
 }
